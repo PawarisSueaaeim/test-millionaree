@@ -33,7 +33,6 @@ export default function Landing() {
     const [limit, setLimit] = useState<number>(
         limitParams ? Number(limitParams) : 9
     );
-    const [isFetching, setIsFetching] = useState<boolean>(false);
 
     const [imageUrl, setImageUrl] = useState<string>('');
     const [height, setHeight] = useState<number | null>(null);
@@ -67,47 +66,45 @@ export default function Landing() {
             try {
                 setLoading(true);
                 router.push(`/?page=${page}&limit=${limit}`, { scroll: false });
-                const response = await axios.get(`${baseURL}v2/list?page=${page}&limit=${limit}`);
+                const response = await axios.get(
+                    `${baseURL}v2/list?page=${page}&limit=${limit}`
+                );
                 if (response?.status === 200) {
                     setList((prevImg) => [...prevImg, ...response?.data]);
-                }else{
+                } else {
                     Swal.fire({
-                        icon: "info",
+                        icon: 'info',
                         title: `Image list page ${page} found`,
-                        confirmButtonText: "OK",
-                    })
+                        confirmButtonText: 'OK',
+                    });
                 }
             } catch (error: any) {
-                router.push(`/error?message=${error.message}&response=${error.response?.data}`);
+                router.push(
+                    `/error?message=${error.message}&response=${error.response?.data}`
+                );
             } finally {
                 setLoading(false);
             }
-        }
+        };
         getList();
-    }, [page, limit]);
+    }, [page]);
 
     useEffect(() => {
         const handleScroll = () => {
             if (
                 window.innerHeight + window.scrollY >=
-                document.body.offsetHeight - 100
+                    document.documentElement.scrollHeight - 100 &&
+                !loading
             ) {
                 setTimeout(() => {
-                    setIsFetching(true);
+                    setPage(page + 1);
                 }, 500);
             }
         };
-        if (isFetching && !loading) {
-            setTimeout(() => {
-                setPage(page + 1);
-                setIsFetching(false);
-            }, 500);
-        }
+
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [isFetching]);
-
-    console.log(loading)
+    }, [loading]);
 
     return (
         <>
@@ -135,9 +132,13 @@ export default function Landing() {
                         />
                     </div>
                 ))}
-                <div className="grid col-span-1 md:col-span-2 lg:col-span-3 px-10 py-20">
-                    <Loading />
-                </div>
+                {loading && (
+                    <div
+                        className={`grid col-span-1 md:col-span-2 lg:col-span-3 h-10 py-10 top-0`}
+                    >
+                        <Loading />
+                    </div>
+                )}
             </div>
             <Popup close={() => handleOnCloseModal(false)} open={isOpenModal}>
                 <Modal
@@ -148,7 +149,6 @@ export default function Landing() {
                     download={download}
                     onStopAction={(e) => e.stopPropagation()}
                     onClick={(value) => handleOnCloseModal(value)}
-
                 />
             </Popup>
         </>
