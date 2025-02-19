@@ -1,11 +1,14 @@
 'use client';
-import { getPhotoList } from '@/api/get';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Card from '../ui/card';
 import Loading from '../ui/loading';
 import Modal from '../ui/modal';
 import Popup from '../ui/popup';
+import Swal from 'sweetalert2';
+import axios from 'axios';
+
+const baseURL = process.env.NEXT_PUBLIC_PHOTO_API;
 
 export type IlistData = {
     author: string;
@@ -19,10 +22,17 @@ export type IlistData = {
 export default function Landing() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const pageParams = searchParams.get('page');
+    const limitParams = searchParams.get('limit');
+
     const [lists, setList] = useState<IlistData[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [page, setPage] = useState<number>(1);
-    const [limit, setLimit] = useState<number>(9);
+    const [page, setPage] = useState<number>(
+        pageParams ? Number(pageParams) : 1
+    );
+    const [limit, setLimit] = useState<number>(
+        limitParams ? Number(limitParams) : 9
+    );
     const [isFetching, setIsFetching] = useState<boolean>(false);
 
     const [imageUrl, setImageUrl] = useState<string>('');
@@ -53,21 +63,22 @@ export default function Landing() {
     };
 
     useEffect(() => {
-        try {
-            const pageParams = searchParams.get('page');
-            const limitParams = searchParams.get('limit');
-            const getList = async () => {
+        const getList = async () => {
+            try {
                 setLoading(true);
-                const response = await getPhotoList(pageParams, limitParams);
-                setList((prevImg) => [...prevImg, ...response]);
-            };
-            getList();
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
+                router.push(`/?page=${page}&limit=${limit}`, { scroll: false });
+                const response = await axios.get(`${baseURL}v2/list?page=${page}&limit=${limit}`);
+                if (response?.status === 200) {
+                    setList((prevImg) => [...prevImg, ...response.data]);
+                }
+            } catch (error: any) {
+                router.push(`/error?message=${error.message}&response=${error.response.data}`);
+            } finally {
+                setLoading(false);
+            }
         }
-    }, [searchParams]);
+        getList();
+    }, [page, limit]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -90,20 +101,15 @@ export default function Landing() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [isFetching]);
 
-    useEffect(() => {
-        router.push(`/?page=${page}&limit=${limit}`, { scroll: false });
-    }, [limit, page]);
-
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {lists.map((item) => (
-                    <span
-                        key={item.id}
+                {lists?.map((item, index) => (
+                    <div
+                        key={`${item.id}-${index}`}
                         className="flex justify-center items-center"
                     >
                         <Card
-                            id={item.id}
                             image={item.download_url}
                             author={item.author}
                             height={item.height}
@@ -119,7 +125,7 @@ export default function Landing() {
                                 })
                             }
                         />
-                    </span>
+                    </div>
                 ))}
                 <div className="grid col-span-1 md:col-span-2 lg:col-span-3 px-10 py-20">
                     <Loading />

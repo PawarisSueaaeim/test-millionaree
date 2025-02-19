@@ -43,8 +43,8 @@ export default function Modal({
     };
 
     return (
-        <div className="p-4 md:p-20 lg:p-40">
-            <div className="relative w-full">
+        <div className="p-4 md:p-20 lg:p-40" onClick={() => onClick(false)}>
+            <div className="relative w-full" onClick={(e) => e.stopPropagation()}>
                 <div className="relative w-full flex justify-center items-center bg-black rounded-t-lg overflow-hidden">
                     <IoIosClose
                         className="absolute top-5 right-5 text-white text-3xl hover:scale-125 hover:text-gray-400 duration-300"

@@ -20,7 +20,7 @@ export default {
                 },
             },
             animation: {
-                spin: 'spin 3s linear infinite',
+                spin: 'spin 1s linear infinite',
             },
         },
     },

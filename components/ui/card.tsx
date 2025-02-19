@@ -3,7 +3,6 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 
 type Props = {
-    id?: string;
     image: string;
     author: string;
     height: number;
@@ -11,12 +10,12 @@ type Props = {
     onClick: () => void;
 };
 
-export default function Card({ id, image, author, height, width, onClick }: Props) {
+export default function Card({ image, author, height, width, onClick }: Props) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
+    const [imgSrc, setImgSrc] = useState<string>(image);
 
     return (
         <div
-            id={id}
             className="relative max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -24,10 +23,11 @@ export default function Card({ id, image, author, height, width, onClick }: Prop
         >
             <Image
                 className="rounded-lg object-cover"
-                src={image ? image : '/images/no-image.png'}
+                src={imgSrc}
                 alt={image}
                 height={height}
                 width={width}
+                onError={() => setImgSrc('/images/no-image.png')}
             />
             <div
                 className={`${

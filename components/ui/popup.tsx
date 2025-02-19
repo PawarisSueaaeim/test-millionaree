@@ -1,5 +1,4 @@
 import React from 'react';
-import { IoIosClose } from 'react-icons/io';
 
 type Props = {
     open: boolean;
@@ -13,7 +12,7 @@ export default function Popup({ open, close, children }: Props) {
             close();
         }
     };
-    document.addEventListener('keydown', handleKeyDown);
+    document?.addEventListener('keydown', handleKeyDown);
     
     return (
         <div
