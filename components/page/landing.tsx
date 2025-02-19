@@ -3,8 +3,8 @@ import { getPhotoList } from '@/api/get';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Card from '../ui/card';
-import { Button } from '../ui/button';
 import Loading from '../ui/loading';
+import Modal from '../ui/modal';
 
 export type IlistData = {
     author: string;
@@ -23,6 +23,29 @@ export default function Landing() {
     const [page, setPage] = useState<number>(1);
     const [limit, setLimit] = useState<number>(9);
     const [isFetching, setIsFetching] = useState<boolean>(false);
+
+    const [imageUrl, setImageUrl] = useState<string>('');
+    const [height, setHeight] = useState<number | null>(null);
+    const [width, setWidth] = useState<number | null>(null);
+    const [author, setAuthor] = useState<string>('');
+    const [download, setDownload] = useState<string>('');
+
+    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+
+    const handleOnClickOpenModal = ({
+        url,
+        author,
+        download_url,
+        height,
+        width,
+    }: IlistData) => {
+        setIsOpenModal(true);
+        setImageUrl(url);
+        setAuthor(author);
+        setDownload(download_url);
+        setHeight(height);
+        setWidth(width);
+    };
 
     useEffect(() => {
         try {
@@ -55,7 +78,7 @@ export default function Landing() {
         };
         if (isFetching) {
             setTimeout(() => {
-                setLimit(limit + 9);
+                setLimit(limit);
                 setIsFetching(false);
             }, 500);
         }
@@ -68,25 +91,49 @@ export default function Landing() {
     }, [limit]);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {lists.map((item) => (
-                <div key={item.id} className="flex justify-center items-center">
-                    <Card
-                        id={item.id}
-                        image={
-                            'https://images.unsplash.com/photo-1421104138464-46c0563487a4?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDJ8fHxlbnwwfHx8fHw%3D'
+        <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {lists.map((item) => (
+                    <div
+                        key={item.id}
+                        className="flex justify-center items-center"
+                        onClick={() =>
+                            handleOnClickOpenModal({
+                                id: item.id,
+                                url: item.url,
+                                author: item.author,
+                                download_url: item.download_url,
+                                height: item.height,
+                                width: item.width,
+                            })
                         }
-                        author={item.author}
-                        height={item.height}
-                        width={item.width}
+                    >
+                        <Card
+                            id={item.id}
+                            image={item.download_url}
+                            author={item.author}
+                            height={item.height}
+                            width={item.width}
+                        />
+                    </div>
+                ))}
+                {loading && (
+                    <div className="grid col-span-1 md:col-span-2 lg:col-span-3 px-10 py-20">
+                        <Loading />
+                    </div>
+                )}
+            </div>
+            {isOpenModal && (
+                <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50 z-[99]">
+                    <Modal
+                        image={imageUrl}
+                        author={author}
+                        height={height}
+                        width={width}
+                        download={download}
                     />
                 </div>
-            ))}
-            {loading && (
-                <div className="grid col-span-1 md:col-span-2 lg:col-span-3 px-10 py-20">
-                    <Loading />
-                </div>
             )}
-        </div>
+        </>
     );
 }
