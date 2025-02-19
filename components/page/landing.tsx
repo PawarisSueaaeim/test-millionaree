@@ -69,10 +69,16 @@ export default function Landing() {
                 router.push(`/?page=${page}&limit=${limit}`, { scroll: false });
                 const response = await axios.get(`${baseURL}v2/list?page=${page}&limit=${limit}`);
                 if (response?.status === 200) {
-                    setList((prevImg) => [...prevImg, ...response.data]);
+                    setList((prevImg) => [...prevImg, ...response?.data]);
+                }else{
+                    Swal.fire({
+                        icon: "info",
+                        title: `Image list page ${page} found`,
+                        confirmButtonText: "OK",
+                    })
                 }
             } catch (error: any) {
-                router.push(`/error?message=${error.message}&response=${error.response.data}`);
+                router.push(`/error?message=${error.message}&response=${error.response?.data}`);
             } finally {
                 setLoading(false);
             }
@@ -100,6 +106,8 @@ export default function Landing() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [isFetching]);
+
+    console.log(loading)
 
     return (
         <>
@@ -138,7 +146,9 @@ export default function Landing() {
                     height={height}
                     width={width}
                     download={download}
+                    onStopAction={(e) => e.stopPropagation()}
                     onClick={(value) => handleOnCloseModal(value)}
+
                 />
             </Popup>
         </>

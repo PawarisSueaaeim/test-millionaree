@@ -23,15 +23,14 @@ export default function Popup({ open, close, children }: Props) {
 
     return (
         <div
-            onClick={close}
             className={`fixed inset-0 flex justify-center items-center transition-colors ${
                 open ? ' visible bg-black/50' : 'invisible'
             }`}
+            onClick={close}
         >
             <div
-                onClick={(event) => event.stopPropagation()}
                 className={`p-4 md:p-20 lg:p-40 transition-all ${
-                    open ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
+                    open ? 'scale-100 opacity-100 duration-200' : 'scale-50 opacity-0 duration-200'
                 }`}
             >
                 {children}

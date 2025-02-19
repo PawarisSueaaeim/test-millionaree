@@ -27,7 +27,7 @@ export default function Card({ image, author, height, width, onClick }: Props) {
                 alt={image}
                 height={height}
                 width={width}
-                onError={() => setImgSrc('/images/no-image.png')}
+                onError={() => setImgSrc('/pic/no-image.png')}
             />
             <div
                 className={`${
