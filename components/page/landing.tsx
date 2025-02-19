@@ -134,7 +134,7 @@ export default function Landing() {
                 ))}
                 {loading && (
                     <div
-                        className={`grid col-span-1 md:col-span-2 lg:col-span-3 h-10 py-10 top-0`}
+                        className={`grid col-span-1 md:col-span-2 lg:col-span-3 h-10 p-10 top-0`}
                     >
                         <Loading />
                     </div>
