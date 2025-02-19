@@ -22,7 +22,7 @@ export default function Card({ id, image, author, height, width }: Props) {
         >
             <Image
                 className="rounded-lg object-cover"
-                src={image}
+                src={image ? image : '/images/no-image.png'}
                 alt={image}
                 height={height}
                 width={width}

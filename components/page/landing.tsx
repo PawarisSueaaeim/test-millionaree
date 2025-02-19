@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react';
 import Card from '../ui/card';
 import Loading from '../ui/loading';
 import Modal from '../ui/modal';
+import Popup from '../ui/popup';
+import Image from 'next/image';
 
 export type IlistData = {
     author: string;
@@ -47,6 +49,10 @@ export default function Landing() {
         setWidth(width);
     };
 
+    const handleOnCloseModal = (value: boolean) => {
+        setIsOpenModal(value);
+    };
+
     useEffect(() => {
         try {
             const pageParams = searchParams.get('page');
@@ -54,8 +60,7 @@ export default function Landing() {
             const getList = async () => {
                 setLoading(true);
                 const response = await getPhotoList(pageParams, limitParams);
-                setList(response);
-                console.log(pageParams, limitParams);
+                setList((prevImg) => [...prevImg, ...response]);
             };
             getList();
         } catch (error) {
@@ -76,9 +81,9 @@ export default function Landing() {
                 }, 500);
             }
         };
-        if (isFetching) {
+        if (isFetching && !loading) {
             setTimeout(() => {
-                setLimit(limit);
+                setPage(page + 1);
                 setIsFetching(false);
             }, 500);
         }
@@ -88,7 +93,7 @@ export default function Landing() {
 
     useEffect(() => {
         router.push(`/?page=${page}&limit=${limit}`, { scroll: false });
-    }, [limit]);
+    }, [limit, page]);
 
     return (
         <>
@@ -117,23 +122,24 @@ export default function Landing() {
                         />
                     </div>
                 ))}
-                {loading && (
-                    <div className="grid col-span-1 md:col-span-2 lg:col-span-3 px-10 py-20">
-                        <Loading />
-                    </div>
-                )}
+                <div className="grid col-span-1 md:col-span-2 lg:col-span-3 px-10 py-20">
+                    <Loading />
+                </div>
             </div>
-            {isOpenModal && (
-                <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50 z-[99]">
-                    <Modal
+            <Popup
+                close={() => setIsOpenModal(false)}
+                open={isOpenModal}
+            >
+                <Modal
                         image={imageUrl}
                         author={author}
                         height={height}
                         width={width}
                         download={download}
+                        stopAction={(event) => event.stopPropagation()}
+                        onClick={(value) => handleOnCloseModal(value)}
                     />
-                </div>
-            )}
+            </Popup>
         </>
     );
 }

@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
 import { Button } from './button';
+import { IoIosClose } from 'react-icons/io';
 
 type Props = {
     image: string;
@@ -8,6 +9,8 @@ type Props = {
     width: number | null;
     download: string | '';
     author: string;
+    stopAction: (event: any) => void;
+    onClick: (value: boolean) => void;
 };
 
 export default function Modal({
@@ -16,9 +19,18 @@ export default function Modal({
     width,
     download,
     author,
+    stopAction,
+    onClick,
 }: Props) {
     const isPlaceholder = !image || image === '/pic/no-image.png';
-    
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+            onClick(false);
+        }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+
     const handleDownload = async () => {
         if (!download) return;
 
@@ -40,17 +52,23 @@ export default function Modal({
     };
 
     return (
-        <div className='md:p-20 lg:p-40'>
+        <div className="p-4 md:p-20 lg:p-40" onClick={stopAction}>
             <div className="relative w-full">
-                <div className="relative w-full flex justify-center items-center bg-black rounded-t-lg">
-                    <Image
-                        className="object-contain max-h-[550px]"
-                        src={isPlaceholder ? '/pic/no-image.png' : download}
-                        layout="intrinsic"
-                        width={isPlaceholder ? 300 : width ?? 500}
-                        height={isPlaceholder ? 300 : height ?? 500}
-                        alt={author}
+                <div className="relative w-full flex justify-center items-center bg-black rounded-t-lg overflow-hidden">
+                    <IoIosClose
+                        className="absolute top-5 right-5 text-white text-3xl hover:scale-125 hover:text-gray-400 duration-300"
+                        onClick={() => onClick(false)}
                     />
+                    <a href={download} target="_blank">
+                        <Image
+                            className="object-contain max-h-[550px]"
+                            src={isPlaceholder ? '/pic/no-image.png' : download}
+                            layout="intrinsic"
+                            width={isPlaceholder ? 300 : width ?? 500}
+                            height={isPlaceholder ? 300 : height ?? 500}
+                            alt={author}
+                        />
+                    </a>
                 </div>
             </div>
             <div className="p-5 bg-white w-full rounded-b-lg">
@@ -61,7 +79,7 @@ export default function Modal({
                     Original size: {width} x {height}
                 </p>
                 <div className="flex gap-4">
-                    <Button onClick={() =>  handleDownload()}>Download</Button>
+                    <Button onClick={() => handleDownload()}>Download</Button>
                     <a
                         href={image}
                         target="_blank"
