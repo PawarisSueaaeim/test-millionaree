@@ -1,7 +1,10 @@
+import Landing from "@/components/page/landing";
 import { Button } from "@/components/ui/button";
 
-export default function Home() {
+export default async function Home() {
+
     return <div>
-		<Button>Click</Button>
+		<div className="flex justify-center items-center">Image Gallery</div>
+		<Landing/>
 	</div>;
 }
