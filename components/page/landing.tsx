@@ -6,7 +6,6 @@ import Card from '../ui/card';
 import Loading from '../ui/loading';
 import Modal from '../ui/modal';
 import Popup from '../ui/popup';
-import Image from 'next/image';
 
 export type IlistData = {
     author: string;
@@ -99,19 +98,9 @@ export default function Landing() {
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {lists.map((item) => (
-                    <div
+                    <span
                         key={item.id}
                         className="flex justify-center items-center"
-                        onClick={() =>
-                            handleOnClickOpenModal({
-                                id: item.id,
-                                url: item.url,
-                                author: item.author,
-                                download_url: item.download_url,
-                                height: item.height,
-                                width: item.width,
-                            })
-                        }
                     >
                         <Card
                             id={item.id}
@@ -119,25 +108,32 @@ export default function Landing() {
                             author={item.author}
                             height={item.height}
                             width={item.width}
+                            onClick={() =>
+                                handleOnClickOpenModal({
+                                    id: item.id,
+                                    url: item.url,
+                                    author: item.author,
+                                    download_url: item.download_url,
+                                    height: item.height,
+                                    width: item.width,
+                                })
+                            }
                         />
-                    </div>
+                    </span>
                 ))}
                 <div className="grid col-span-1 md:col-span-2 lg:col-span-3 px-10 py-20">
                     <Loading />
                 </div>
             </div>
-            <Popup
-                close={() => handleOnCloseModal(false)}
-                open={isOpenModal}
-            >
+            <Popup close={() => handleOnCloseModal(false)} open={isOpenModal}>
                 <Modal
-                        image={imageUrl}
-                        author={author}
-                        height={height}
-                        width={width}
-                        download={download}
-                        onClick={(value) => handleOnCloseModal(value)}
-                    />
+                    image={imageUrl}
+                    author={author}
+                    height={height}
+                    width={width}
+                    download={download}
+                    onClick={(value) => handleOnCloseModal(value)}
+                />
             </Popup>
         </>
     );

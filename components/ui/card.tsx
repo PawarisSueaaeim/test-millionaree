@@ -8,9 +8,10 @@ type Props = {
     author: string;
     height: number;
     width: number;
+    onClick: () => void;
 };
 
-export default function Card({ id, image, author, height, width }: Props) {
+export default function Card({ id, image, author, height, width, onClick }: Props) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
 
     return (
@@ -19,6 +20,7 @@ export default function Card({ id, image, author, height, width }: Props) {
             className="relative max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onClick={onClick}
         >
             <Image
                 className="rounded-lg object-cover"
