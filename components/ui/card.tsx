@@ -16,7 +16,7 @@ export default function Card({ id, image, author, height, width }: Props) {
     return (
         <div
             id={id}
-            className="relative max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 overflow-hidden"
+            className="relative max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >

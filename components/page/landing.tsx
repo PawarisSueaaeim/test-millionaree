@@ -127,7 +127,7 @@ export default function Landing() {
                 </div>
             </div>
             <Popup
-                close={() => setIsOpenModal(false)}
+                close={() => handleOnCloseModal(false)}
                 open={isOpenModal}
             >
                 <Modal
@@ -136,7 +136,6 @@ export default function Landing() {
                         height={height}
                         width={width}
                         download={download}
-                        stopAction={(event) => event.stopPropagation()}
                         onClick={(value) => handleOnCloseModal(value)}
                     />
             </Popup>

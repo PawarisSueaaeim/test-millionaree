@@ -9,7 +9,6 @@ type Props = {
     width: number | null;
     download: string | '';
     author: string;
-    stopAction: (event: any) => void;
     onClick: (value: boolean) => void;
 };
 
@@ -19,17 +18,9 @@ export default function Modal({
     width,
     download,
     author,
-    stopAction,
     onClick,
 }: Props) {
     const isPlaceholder = !image || image === '/pic/no-image.png';
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key === 'Escape') {
-            onClick(false);
-        }
-    };
-    document.addEventListener('keydown', handleKeyDown);
 
     const handleDownload = async () => {
         if (!download) return;
@@ -52,7 +43,7 @@ export default function Modal({
     };
 
     return (
-        <div className="p-4 md:p-20 lg:p-40" onClick={stopAction}>
+        <div className="p-4 md:p-20 lg:p-40">
             <div className="relative w-full">
                 <div className="relative w-full flex justify-center items-center bg-black rounded-t-lg overflow-hidden">
                     <IoIosClose
