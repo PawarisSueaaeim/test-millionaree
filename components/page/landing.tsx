@@ -109,13 +109,12 @@ const LandingContent = () => {
                 }, 500);
             }
         };
-
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [loading]);
 
     return (
-        <>
+        <div className='min-h-screen'>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {lists?.map((item, index) => (
                     <div
@@ -159,6 +158,6 @@ const LandingContent = () => {
                     onClick={(value) => handleOnCloseModal(value)}
                 />
             </Popup>
-        </>
+        </div>
     );
 } 
