@@ -1,6 +1,6 @@
 'use client';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import Card from '../ui/card';
 import Loading from '../ui/loading';
 import Modal from '../ui/modal';
@@ -20,6 +20,14 @@ export type IlistData = {
 };
 
 export default function Landing() {
+    return (
+        <Suspense fallback={<Loading />}>
+            <LandingContent />
+        </Suspense>
+    )
+}
+
+const LandingContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const pageParams = searchParams.get('page');
@@ -153,4 +161,4 @@ export default function Landing() {
             </Popup>
         </>
     );
-}
+} 
